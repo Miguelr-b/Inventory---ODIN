@@ -14,6 +14,9 @@ app.use(express.static(assetsPath));
 const homeRouter = require('./routes/home');
 app.use( "/", homeRouter);
 
+const productRouter = require('./routes/product');
+app.use( "/products", productRouter);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, (error) => {
   if (error) {

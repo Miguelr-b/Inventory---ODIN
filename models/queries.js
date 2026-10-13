@@ -2,7 +2,7 @@ const pool = require("./pool");
 
 
 // GET ALL
-async function getAllProducts(query = null) {
+async function getAllProducts(query = {}) {
   return filterProducts(query); 
 }
 
@@ -166,7 +166,7 @@ async function filterProducts({ category, sort, order } = {}) {
 
 async function getProductById(id) {
     const { rows } = await pool.query( 
-      `SELECT p.*, c.name AS category_name FROM products p JOIN category c ON p.category_id = c.id`,[id]
+      `SELECT p.*, c.name AS category_name FROM products p JOIN category c ON p.category_id = c.id WHERE p.id = $1`,[id]
     );
 
     

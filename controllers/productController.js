@@ -69,10 +69,10 @@ async function deleteProducts(req, res) {
 async function getDetailProducts(req, res) {
     const id =req.params.id;
 
-    const products = await db.getProductById(id);
-    if (!products) {return res.status(404).send("Page Not Found!");}
+    const product = await db.getProductById(id);
+    if (!product) {return res.status(404).send("Page Not Found!");}
 
-    return res.render(`/detailProduct/${id}`, {products});
+    //return res.render(“detailProduct”, { product }); //res.render(`/detailProduct/${id}`, {products})
 }
 
 
