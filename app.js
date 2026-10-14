@@ -17,6 +17,15 @@ app.use( "/", homeRouter);
 const productRouter = require('./routes/product');
 app.use( "/products", productRouter);
 
+app.use((req, res) => {
+  res.status(404).send("Page Not Found!");
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send("Something went wrong!");
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, (error) => {
   if (error) {

@@ -2,12 +2,8 @@ const pool = require("./pool");
 
 
 // GET ALL
-async function getAllProducts(query = {}) {
-  return filterProducts(query); 
-}
-
 async function getAllCategories() {
-  const { rows } = await pool.query("SELECT * FROM category");
+  const { rows } = await pool.query("SELECT * FROM category ORDER BY name");
   return rows;
 }
 
@@ -174,7 +170,6 @@ async function getProductById(id) {
 }
 
 module.exports = {
-  getAllProducts,
   addProduct,
   updateProduct,
   deleteProduct,

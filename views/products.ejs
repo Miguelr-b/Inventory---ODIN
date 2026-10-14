@@ -6,6 +6,13 @@
     <title>Document</title>
 </head>
 <body>
-    <div>Hello</div>
+    <h1>Products</h1>
+
+    <%= products %>
+    <ul>
+        <% products.map((product) => { %>
+            <li><%= product.name %></li>
+        <% }) %>
+    </ul>
 </body>
 </html>

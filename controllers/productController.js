@@ -1,4 +1,26 @@
 const db = require("../models/queries");
+const { body, validationResult } = require("express-validator");
+
+const RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary", "Artifact"];
+const COINS = ["Copper (cp)", "Silver (sp)", "Electrum (ep)", "Gold (gp)", "Platinum (pp)"];
+
+const validateProduct = [
+    body("name").trim().notEmpty().withMessage("Name is required."),
+    body("code").trim().notEmpty().withMessage("Code is required."),
+    body("coin").isIn(COINS).withMessage("Invalid coin."),
+    body("rarity").isIn(RARITIES).withMessage("Invalid rarity."),
+    body("price").isInt({ min: 0 }).withMessage("Price must be a whole number (0 or more)."),
+    body("stock_size").isInt({ min: 0 }).withMessage("Stock size must be a whole number (0 or more)."),
+    body("category_id").isInt({ min: 1 }).withMessage("Invalid category."),
+];
+
+function getErrors(req) {
+    return validationResult(req).array().map((e) => e.msg);
+}
+
+function isValidId(id) {
+    return /^\d+$/.test(id) && Number(id) > 0 && Number(id) <= 2147483647;
+}
 
 async function getProducts(req, res, next) {
     const search = req.query.search;
@@ -7,12 +29,10 @@ async function getProducts(req, res, next) {
         if (!search) {
             const products = await db.filterProducts(req.query);
 
-            console.log("Products: ", products);
-            return res.render("products", {products});
+            return res.render("products", {products, message: "test"});
         } else {
             const products = await db.getSearch(search);
 
-            console.log("Products: ", products);
             return res.render("detailProduct", {products});
         }        
     }
@@ -25,54 +45,82 @@ async function getProducts(req, res, next) {
 async function getAddProducts(req, res) {
     const listedCategories = await db.getAllCategories();
 
-    res.render("addProduct", { listedCategories });
+    res.render("addProduct", { listedCategories, product: {}, errors: [] });
 }
 
 async function postAddProducts(req, res) {
-    
-    //Validar dados
+    const errors = getErrors(req);
+
+    if (errors.length > 0) {
+        const listedCategories = await db.getAllCategories();
+        return res.status(400).render("addProduct", {
+            listedCategories,
+            product: req.body,
+            errors,
+        });
+    }
 
     await db.addProduct (req.body);
-    res.redirect("/addProduct");
+    res.redirect("/products/new");
 }
 
 async function editProducts(req, res) {
     const id = req.params.id;
+    if (!isValidId(id)) {return res.status(404).send("Page Not Found!");}
+
     const product = await db.getProductById(id);
     if (!product) {return res.status(404).send("Page Not Found!");}
 
     const listedCategories = await db.getAllCategories();
-    const selectedCategory = product.category_name;
 
 
     res.render("editProduct", {
         product: product,
         listedCategories,
-        selectedCategory,
+        category_name: product.category_name,
+        errors: [],
     });
 }
 
 async function updateProducts(req, res) {
     const id = req.params.id
+    if (!isValidId(id)) {return res.status(404).send("Page Not Found!");}
 
-    // Validar os dados 
+    const errors = getErrors(req);
+
+    if (errors.length > 0) {
+        const listedCategories = await db.getAllCategories();
+        const category = listedCategories.find((c) => c.id === Number(req.body.category_id));
+
+        return res.status(400).render("editProduct", {
+            product: { ...req.body, id },
+            listedCategories,
+            category_name: category ? category.name : "",
+            errors,
+        });
+    }
+
 
     await db.updateProduct(id, req.body);  
-    res.redirect(`/detailProduct/${id}`);
+    res.redirect(`/products/${id}`);
 }
 
 async function deleteProducts(req, res) {
-  await db.deleteProduct(req.params.id);  
-  res.redirect("/products");
+    const id = req.params.id;
+    if (!isValidId(id)) {return res.status(404).send("Page Not Found!");}
+
+    await db.deleteProduct(req.params.id);  
+    res.redirect("/products");
 }
 
 async function getDetailProducts(req, res) {
     const id =req.params.id;
+    if (!isValidId(id)) {return res.status(404).send("Page Not Found!");}
 
     const product = await db.getProductById(id);
     if (!product) {return res.status(404).send("Page Not Found!");}
 
-    //return res.render(“detailProduct”, { product }); //res.render(`/detailProduct/${id}`, {products})
+    res.render("detailProduct", { product })
 }
 
 
@@ -85,4 +133,5 @@ module.exports = {
   updateProducts,
   deleteProducts,
   getDetailProducts,
+  validateProduct,
 };

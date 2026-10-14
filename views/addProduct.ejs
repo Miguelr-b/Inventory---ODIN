@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Add products</h1>
+
+    <% if (errors.length > 0) { %>
+        <ul class="errors">
+            <% errors.forEach((error) => { %>
+                <li><%= error %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <form method="POST" action="/products/new" class="newProduct">
+
+        <label class="field" for="name">
+            <span class="label">name:</span>
+            <input type="text" id="name" name="name" placeholder="Healing Potion" value="<%= product.name || '' %>" maxlength="255" autocomplete="off" autofocus required>
+        </label>
+
+        <label class="field" for="description">
+            <span class="label">description:</span>
+            <textarea id="description" name="description" placeholder="Restores 2d4 + 2 hit points."><%= product.description || '' %></textarea>
+        </label>
+
+        <label class="field" for="code">
+            <span class="label">code:</span>
+            <input type="text" id="code" name="code" placeholder="POT-001" value="<%= product.code || '' %>" maxlength="255" autocomplete="off" required>
+        </label>
+
+        <label class="field" for="price">
+            <span class="label">price:</span>
+            <input type="number" id="price" name="price" placeholder="50" value="<%= product.price || '' %>" min="0" step="1" required>
+        </label>
+
+        <label class="field" for="coin">
+            <span class="label">coin:</span>
+            <select id="coin" name="coin" required>
+                <option value="" disabled <%= product.coin ? '' : 'selected' %>>Select a coin</option>
+                <% ["Copper (cp)", "Silver (sp)", "Electrum (ep)", "Gold (gp)", "Platinum (pp)"].forEach((coin) => { %>
+                    <option value="<%= coin %>" <%= product.coin === coin ? 'selected' : '' %>><%= coin %></option>
+                <% }) %>
+            </select>
+        </label>
+
+        <label class="field" for="rarity">
+            <span class="label">rarity:</span>
+            <select id="rarity" name="rarity" required>
+                <option value="" disabled <%= product.rarity ? '' : 'selected' %>>Select a rarity</option>
+                <% ["Common", "Uncommon", "Rare", "Very Rare", "Legendary", "Artifact"].forEach((rarity) => { %>
+                    <option value="<%= rarity %>" <%= product.rarity === rarity ? 'selected' : '' %>><%= rarity %></option>
+                <% }) %>
+            </select>
+        </label>
+
+        <label class="field" for="image_url">
+            <span class="label">image url:</span>
+            <input type="url" id="image_url" name="image_url" placeholder="https://..." value="<%= product.image_url || '' %>" maxlength="1000" autocomplete="off">
+        </label>
+
+        <label class="field" for="stock_size">
+            <span class="label">stock size:</span>
+            <input type="number" id="stock_size" name="stock_size" placeholder="10" value="<%= product.stock_size || '' %>" min="0" step="1" required>
+        </label>
+
+        <label class="field" for="category_id">
+            <span class="label">category:</span>
+            <select id="category_id" name="category_id" required>
+                <option value="" disabled <%= product.category_id ? '' : 'selected' %>>Select a category</option>
+                <% listedCategories.forEach((category) => { %>
+                    <option value="<%= category.id %>" <%= category.id === Number(product.category_id) ? 'selected' : '' %>><%= category.name %></option>
+                <% }) %>
+            </select>
+        </label>
+
+        <button type="submit" class="new">
+            <span class="placeholder">submit</span> 
+        </button>
+    </form>
+</body>
+</html>
