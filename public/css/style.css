@@ -1,0 +1,286 @@
+/* ---------- Variables ---------- */
+:root {
+    --font-main: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+    --bg-main: #e8e8ec;
+    --bg-bar: #ffffff;
+    --bg-hover: #ececf0;
+    --text: #1b1b1f;
+    --text-muted: #5b5b66;
+    --border: #d4d4db;
+    --accent: #c62828;
+    --accent-hover: #a31f1f;
+    --on-accent: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.15);
+
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    --bg-main: #121214;
+    --bg-bar: #1f1f24;
+    --bg-hover: #2a2a31;
+    --text: #ececf1;
+    --text-muted: #a0a0ad;
+    --border: #34343c;
+    --accent: #d32f2f;
+    --accent-hover: #ef5350;
+    --on-accent: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.5);
+
+    color-scheme: dark;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-main);
+    background-color: var(--bg-main);
+    color: var(--text);
+    transition: background-color 0.25s, color 0.25s;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+main {
+    flex: 1;
+    padding: 2rem 1.5rem;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+    display: flex;
+    align-items: center;                /* -- CHANGE LATER -- */
+    gap: 1.5rem;
+    height: 4rem;
+    padding: 0 1.5rem;
+    background-color: var(--bg-bar);
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.25s, border-color 0.25s;
+}
+
+.brand {
+    display: flex;
+
+    
+    font-size: 1.2rem;
+    font-weight: 700;
+    transition: color 0.2s;
+
+    gap: 1rem;
+}
+.brand-accent {
+    color: var(--accent);
+}
+
+.brand:hover {
+    color: var(--accent);
+    scale: 1.01;
+}
+
+.nav {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.nav a {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    padding-top: 0.25rem;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.nav a:hover {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+}
+
+.header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ---------- Icon buttons ---------- */
+.icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+/* ---------- Search ---------- */
+.search {
+    display: flex;
+    align-items: center;
+}
+
+.search input {
+    width: 0;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background-color: var(--bg-main);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: width 0.25s, padding 0.25s, opacity 0.25s, visibility 0s 0.25s;
+}
+
+.search.open input {
+    width: 13rem;
+    padding: 0.4rem 0.9rem;
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.search input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* ---------- Theme toggle icons ---------- */
+.icon-sun {
+    display: none;
+}
+
+:root[data-theme="dark"] .icon-sun {
+    display: block;
+}
+
+:root[data-theme="dark"] .icon-moon {
+    display: none;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--accent);
+    color: var(--on-accent);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px var(--shadow);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* ---------- Home ---------- */
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    text-align: center;
+}
+
+.home h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.home-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+    display: flex;
+    justify-content: center;
+    padding: 0.8rem 1.25rem;
+    background-color: var(--bg-bar);
+    border-top: 1px solid var(--border);
+    transition: background-color 0.25s, border-color 0.25s;
+}
+
+.footer-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: var(--accent);
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 600px) {
+    .site-header {
+        gap: 0.75rem;
+        padding: 0 1rem;
+        position: relative;
+        z-index: 100;
+    }
+
+    .brand {
+        font-size: 1.1rem;
+    }
+
+    .search {
+        position: static;
+    }
+
+    .search input {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        right: 4.5rem;         
+        transform: translateY(-50%);
+        z-index: 2;
+    }
+
+    .search.open input {
+        width: auto;          
+        padding: 0.5rem 1rem;
+    }
+}

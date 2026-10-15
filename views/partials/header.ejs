@@ -1,0 +1,26 @@
+<header class="site-header">
+     
+    <a href="/" class="brand">
+        <%- include('../../public/assets/fire.svg') %>
+        <span><span class="brand-accent">RPG</span> Inventory</span>
+    </a>
+
+    <nav class="nav">
+        <a href="/products">Products</a>
+        <a href="/categories">Categories</a>
+    </nav>
+
+    <div class="header-actions">
+        <form id="search-form" class="search" action="/products/search" method="GET" role="search">
+            <input type="text" name="search" placeholder="Search products..." aria-label="Search products" autocomplete="off">
+            <button type="button" class="icon-btn" aria-label="Open search" aria-expanded="false">
+                <%- include('../../public/assets/search.svg') %>
+            </button>
+        </form>
+
+        <button type="button" id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+            <%- include('../../public/assets/icon-moon.svg') %>
+            <%- include('../../public/assets/icon-sun.svg') %>
+        </button>
+    </div>
+</header>

@@ -4,9 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
+<%- include('partials/head', { title: "Home" }) %>
 <body>
-    <a href="<%= products %>">Products</a>
-    <a href="<%= categories %>">Categories</a>
+    <%- include('partials/header') %>
+
+    <main class="home">
+        <h1>Welcome</h1>
+        <div class="home-options">
+            <a href="/products" class="btn">Products</a>
+            <a href="/categories" class="btn">Categories</a>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
 </body>
 </html>
