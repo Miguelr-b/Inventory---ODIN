@@ -26,14 +26,17 @@ async function getProducts(req, res, next) {
     const search = req.query.search;
 
     try {
+        const listedCategories = await db.getAllCategories();
+        const filters = req.query;
+
         if (!search) {
             const products = await db.filterProducts(req.query);
 
-            return res.render("products", {products, message: "test"});
+            return res.render("products", {products, listedCategories, filters});
         } else {
             const products = await db.getSearch(search);
 
-            return res.render("detailProduct", {products});
+            return res.render("products", {products, listedCategories, filters});
         }        
     }
     catch (err) {

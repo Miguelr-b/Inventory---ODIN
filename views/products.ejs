@@ -1,18 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+<%- include('partials/head', { title: "Products", styles: ["/css/products.css"] }) %>
 <body>
-    <h1>Products</h1>
+    <%- include('partials/header') %>
 
-    <%= products %>
-    <ul>
-        <% products.map((product) => { %>
-            <li><%= product.name %></li>
-        <% }) %>
-    </ul>
+    <% const selectedCategories = [].concat(filters.category || []); %>
+    <% const selectedSort = filters.sort || "name"; %>
+    <% const selectedOrder = String(filters.order).toUpperCase() === "DESC" ? "desc" : "asc"; %>
+
+    <main class="products-page">
+        <h1>Products</h1>
+
+        <div class="products-layout">
+
+            <form class="filters" action="/products" method="GET">
+                <fieldset>
+                    <legend>Sort by</legend>
+                    <% ["name", "price", "rarity"].forEach((option) => { %>
+                        <label class="option">
+                            <input type="radio" name="sort" value="<%= option %>" <%= selectedSort === option ? "checked" : "" %>>
+                            <span><%= option.charAt(0).toUpperCase() + option.slice(1) %></span>
+                        </label>
+                    <% }) %>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Order</legend>
+                    <label class="option">
+                        <input type="radio" name="order" value="asc" <%= selectedOrder === "asc" ? "checked" : "" %>>
+                        <span>Ascending</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="order" value="desc" <%= selectedOrder === "desc" ? "checked" : "" %>>
+                        <span>Descending</span>
+                    </label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Categories</legend>
+                    <% listedCategories.forEach((category) => { %>
+                        <label class="option">
+                            <input type="checkbox" name="category" value="<%= category.name %>" <%= selectedCategories.includes(category.name) ? "checked" : "" %>>
+                            <span><%= category.name %></span>
+                        </label>
+                    <% }) %>
+                </fieldset>
+
+                <button type="submit" class="btn apply_filter" >Apply</button>
+            </form>
+
+            <section class="products-grid">
+                <% if (products.length === 0) { %>
+                    <p class="empty">No products found.</p>
+                <% } %>
+
+                <% products.forEach((product) => { %>
+                    <a href="/products/<%= product.id %>" class="card">
+                        <div class="card-image">
+                            <% if (product.image_url) { %>
+                                <img src="<%= product.image_url %>" alt="<%= product.name %>" loading="lazy">
+                            <% } else { %>
+                                <span>No image</span>
+                            <% } %>
+                        </div>
+
+                        <div class="card-body">
+                            <h3 class="card-name"><%= product.name %></h3>
+                            <p class="card-category"><%= product.category_name %></p>
+                            <div class="card-row">
+                                <p class="card-price"><%= product.price %> <%= product.coin %></p>
+                                <span class="card-rarity"><%= product.rarity %></span>
+                            </div>
+
+                            <p class="card-stock">Stock: <%= product.stock_size %></p>
+                        </div>
+                    </a>
+                <% }) %>
+            </section>
+
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
 </body>
 </html>

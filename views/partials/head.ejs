@@ -17,4 +17,9 @@
     </script>
 
     <link rel="stylesheet" href="/css/style.css">
+    <% if (typeof styles !== "undefined") { %>
+        <% styles.forEach((href) => { %>
+            <link rel="stylesheet" href="<%= href %>">
+        <% }) %>
+    <% } %>
 </head>
