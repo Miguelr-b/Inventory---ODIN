@@ -1,0 +1,104 @@
+<%- include('partials/head', { title: "Edit " + (product.name || "product"), styles: ["/css/products.css"] }) %>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="detail-page">
+        <a href="/products/<%= product.id %>" class="back-link">
+            <%- include('../public/assets/arrow-left.svg') %>
+            <span>Back</span>
+        </a>
+
+        <% if (errors.length > 0) { %>
+            <ul class="edit-errors">
+                <% errors.forEach((error) => { %>
+                    <li><%= error %></li>
+                <% }) %>
+            </ul>
+        <% } %>
+
+        <form method="POST" action="/products/edit/<%= product.id %>" class="detail-card">
+
+            <div class="edit-media">
+                <div class="detail-image">
+                    <img id="image-preview" alt="Image preview" <% if (product.image_url) { %>src="<%= product.image_url %>"<% } else { %>hidden<% } %>>
+                    <span id="image-placeholder" <%= product.image_url ? "hidden" : "" %>>No image</span>
+                </div>
+
+                <label class="edit-field edit-url" for="image_url">
+                    <span>Image URL</span>
+                    <input type="url" id="image_url" name="image_url" class="edit-input" placeholder="https://..." value="<%= product.image_url || '' %>" maxlength="1000" autocomplete="off">
+                </label>
+            </div>
+
+            <div class="detail-info">
+                <label class="edit-field" for="name">
+                    <span>Name</span>
+                    <input type="text" id="name" name="name" class="edit-input edit-input-title" value="<%= product.name || '' %>" maxlength="255" autocomplete="off" required>
+                </label>
+
+                <label class="edit-field" for="category_id">
+                    <span>Category</span>
+                    <select id="category_id" name="category_id" class="edit-input" required>
+                        <option value="" disabled <%= product.category_id ? '' : 'selected' %>>Select a category</option>
+                        <% listedCategories.forEach((category) => { %>
+                            <option value="<%= category.id %>" <%= category.id === Number(product.category_id) ? 'selected' : '' %>><%= category.name %></option>
+                        <% }) %>
+                    </select>
+                </label>
+
+                <div class="edit-row">
+                    <label class="edit-field" for="price">
+                        <span>Price</span>
+                        <input type="number" id="price" name="price" class="edit-input" value="<%= product.price ? Number(product.price) : (product.price ?? '') %>" min="0" step="1" required>
+                    </label>
+
+                    <label class="edit-field" for="coin">
+                        <span>Coin</span>
+                        <select id="coin" name="coin" class="edit-input" required>
+                            <option value="" disabled <%= product.coin ? '' : 'selected' %>>Select a coin</option>
+                            <% ["Copper (cp)", "Silver (sp)", "Electrum (ep)", "Gold (gp)", "Platinum (pp)"].forEach((coin) => { %>
+                                <option value="<%= coin %>" <%= product.coin === coin ? 'selected' : '' %>><%= coin %></option>
+                            <% }) %>
+                        </select>
+                    </label>
+
+                    <label class="edit-field" for="rarity">
+                        <span>Rarity</span>
+                        <select id="rarity" name="rarity" class="edit-input" required>
+                            <option value="" disabled <%= product.rarity ? '' : 'selected' %>>Select a rarity</option>
+                            <% ["Common", "Uncommon", "Rare", "Very Rare", "Legendary", "Artifact"].forEach((rarity) => { %>
+                                <option value="<%= rarity %>" <%= product.rarity === rarity ? 'selected' : '' %>><%= rarity %></option>
+                            <% }) %>
+                        </select>
+                    </label>
+                </div>
+
+                <label class="edit-field" for="description">
+                    <span>Description</span>
+                    <textarea id="description" name="description" class="edit-input" placeholder="Restores 2d4 + 2 hit points."><%= product.description || '' %></textarea>
+                </label>
+
+                <div class="edit-row">
+                    <label class="edit-field" for="code">
+                        <span>Code</span>
+                        <input type="text" id="code" name="code" class="edit-input" value="<%= product.code || '' %>" maxlength="255" autocomplete="off" required>
+                    </label>
+
+                    <label class="edit-field" for="stock_size">
+                        <span>Stock</span>
+                        <input type="number" id="stock_size" name="stock_size" class="edit-input" value="<%= product.stock_size ?? '' %>" min="0" step="1" required>
+                    </label>
+                </div>
+
+                <div class="detail-actions">
+                    <button type="submit" class="btn">Save</button>
+                    <a href="/products/<%= product.id %>" class="btn btn-outline">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="/js/edit.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<%- include('partials/head', { title: product.name, styles: ["/css/products.css"] }) %>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="detail-page">
+        <a href="/products" class="back-link">
+            <%- include('../public/assets/arrow-left.svg') %>
+            <span>Back</span>
+        </a>
+
+        <article class="detail-card">
+            <div class="detail-image">
+                <% if (product.image_url) { %>
+                    <img src="<%= product.image_url %>" alt="<%= product.name %>">
+                <% } else { %>
+                    <span>No image</span>
+                <% } %>
+            </div>
+
+            <div class="detail-info">
+                <p class="detail-category"><%= product.category_name %></p>
+                <h1 class="detail-name"><%= product.name %></h1>
+
+                <div class="detail-row">
+                    <p class="detail-price"><%= Number(product.price) %> <%= product.coin %></p>
+                    <span class="card-rarity"><%= product.rarity %></span>
+                </div>
+
+                <dl class="detail-list">
+                    <div>
+                        <dt>Code</dt>
+                        <dd><%= product.code %></dd>
+                    </div>
+                    <div>
+                        <dt>Stock</dt>
+                        <dd><%= product.stock_size %></dd>
+                    </div>
+                    <div>
+                        <dt>Category</dt>
+                        <dd><%= product.category_name %></dd>
+                    </div>
+                </dl>
+
+                <p class="detail-description">
+                    <%= product.description || "No description." %>
+                </p>
+
+
+                <div class="detail-actions">
+                    <a href="/products/edit/<%= product.id %>" class="btn">Edit</a>
+
+                    <% if (isDefault) { %>
+                        <button type="button" class="btn btn-outline" disabled title="Default products cannot be deleted.">Delete</button>
+                        <span class="detail-note">Default products cannot be deleted.</span>
+                    <% } else { %>
+                        <button type="button" id="delete-open" class="btn btn-outline">Delete</button>
+                    <% } %>
+                </div>
+            </div>
+        </article>
+
+        <% if (!isDefault) { %>
+            <dialog id="delete-dialog" class="dialog">
+                <form method="POST" action="/products/delete/<%= product.id %>">
+                    <h2>Delete product?</h2>
+                    <p>"<%= product.name %>" will be permanently deleted. This cannot be undone.</p>
+                    <div class="dialog-actions">
+                        <button type="button" class="btn btn-outline" data-close>Cancel</button>
+                        <button type="submit" class="btn">Delete</button>
+                    </div>
+                </form>
+            </dialog>
+        <% } %>
+    </main>
+
+    <%- include('partials/footer') %>
+    <script src="/js/detail.js" defer></script>
+</body>
+</html>

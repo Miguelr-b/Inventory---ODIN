@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 
 const RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary", "Artifact"];
 const COINS = ["Copper (cp)", "Silver (sp)", "Electrum (ep)", "Gold (gp)", "Platinum (pp)"];
+const DEFAULT_PRODUCT_LIMIT = 10;
 
 const validateProduct = [
     body("name").trim().notEmpty().withMessage("Name is required."),
@@ -13,6 +14,10 @@ const validateProduct = [
     body("stock_size").isInt({ min: 0 }).withMessage("Stock size must be a whole number (0 or more)."),
     body("category_id").isInt({ min: 1 }).withMessage("Invalid category."),
 ];
+
+function isDefaultProduct(id) {
+    return Number(id) < DEFAULT_PRODUCT_LIMIT;
+}
 
 function getErrors(req) {
     return validationResult(req).array().map((e) => e.msg);
@@ -112,6 +117,8 @@ async function deleteProducts(req, res) {
     const id = req.params.id;
     if (!isValidId(id)) {return res.status(404).send("Page Not Found!");}
 
+    if (isDefaultProduct(id)) {return res.status(403).send("Default products cannot be deleted.");}
+
     await db.deleteProduct(req.params.id);  
     res.redirect("/products");
 }
@@ -123,7 +130,7 @@ async function getDetailProducts(req, res) {
     const product = await db.getProductById(id);
     if (!product) {return res.status(404).send("Page Not Found!");}
 
-    res.render("detailProduct", { product })
+        res.render("detailProduct", { product, isDefault: isDefaultProduct(product.id) })
 }
 
 
