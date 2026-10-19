@@ -7,7 +7,10 @@
     <% const selectedOrder = String(filters.order).toUpperCase() === "DESC" ? "desc" : "asc"; %>
 
     <main class="products-page">
-        <h1>Products</h1>
+        <div class="page-header">
+            <h1>Products</h1>
+            <a href="/products/new" class="btn">New product</a>
+        </div>
 
         <div class="products-layout">
 
@@ -36,12 +39,14 @@
 
                 <fieldset>
                     <legend>Categories</legend>
-                    <% listedCategories.forEach((category) => { %>
-                        <label class="option">
-                            <input type="checkbox" name="category" value="<%= category.name %>" <%= selectedCategories.includes(category.name) ? "checked" : "" %>>
-                            <span><%= category.name %></span>
-                        </label>
-                    <% }) %>
+                    <div class="filter-scroll">
+                        <% listedCategories.forEach((category) => { %>
+                            <label class="option">
+                                <input type="checkbox" name="category" value="<%= category.name %>" <%= selectedCategories.includes(category.name) ? "checked" : "" %>>
+                                <span><%= category.name %></span>
+                            </label>
+                        <% }) %>
+                    </div>
                 </fieldset>
 
                 <button type="submit" class="btn apply_filter" >Apply</button>

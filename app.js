@@ -17,6 +17,9 @@ app.use( "/", homeRouter);
 const productRouter = require('./routes/product');
 app.use( "/products", productRouter);
 
+const categoryRouter = require('./routes/category');
+app.use( "/categories", categoryRouter);
+
 app.use((req, res) => {
   res.status(404).send("Page Not Found!");
 });

@@ -1,11 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+<%- include('partials/head', { title: "Categories", styles: ["/css/categories.css"] }) %>
 <body>
-    
+    <%- include('partials/header') %>
+
+    <main class="categories-page">
+        <h1>Categories</h1>
+
+        <% if (categories.length === 0) { %>
+            <p class="categories-empty">No categories yet.</p>
+        <% } else { %>
+            <div class="categories-grid">
+                <% categories.forEach((category) => { %>
+                    <a href="/products?category=<%= encodeURIComponent(category.name) %>"
+                       class="category-card"
+                       style="--cat-h: <%= category.color.h %>; --cat-s: <%= category.color.s %>%;">
+                        <span class="category-name"><%= category.name %></span>
+                        <span class="category-count"><%= category.product_count %> <%= category.product_count === 1 ? "product" : "products" %></span>
+                    </a>
+                    
+                <% }) %>
+            </div>
+        <% } %>
+    </main>
+
+    <%- include('partials/footer') %>
 </body>
 </html>

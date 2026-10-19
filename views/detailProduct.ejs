@@ -47,11 +47,15 @@
 
 
                 <div class="detail-actions">
-                    <a href="/products/edit/<%= product.id %>" class="btn">Edit</a>
+                    <% if (isDefault) { %>
+                        <button type="button" class="btn btn-outline" disabled title="Default products cannot be edited.">Edit</button>
+                    <% } else { %>
+                        <a href="/products/edit/<%= product.id %>" class="btn">Edit</a>
+                    <% } %>
 
                     <% if (isDefault) { %>
                         <button type="button" class="btn btn-outline" disabled title="Default products cannot be deleted.">Delete</button>
-                        <span class="detail-note">Default products cannot be deleted.</span>
+                        <span class="detail-note">Default products cannot be deleted or edited.</span>
                     <% } else { %>
                         <button type="button" id="delete-open" class="btn btn-outline">Delete</button>
                     <% } %>

@@ -3,7 +3,7 @@ const { body, validationResult } = require("express-validator");
 
 const RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary", "Artifact"];
 const COINS = ["Copper (cp)", "Silver (sp)", "Electrum (ep)", "Gold (gp)", "Platinum (pp)"];
-const DEFAULT_PRODUCT_LIMIT = 10;
+const DEFAULT_PRODUCT_LIMIT = 21;
 
 const validateProduct = [
     body("name").trim().notEmpty().withMessage("Name is required."),
@@ -69,11 +69,15 @@ async function postAddProducts(req, res) {
     }
 
     await db.addProduct (req.body);
-    res.redirect("/products/new");
+    res.redirect("/products");
 }
 
 async function editProducts(req, res) {
     const id = req.params.id;
+    
+    if (Number(id) < DEFAULT_PRODUCT_LIMIT) {
+        return res.status(403).send("Default products cannot be edited.");
+    }
     if (!isValidId(id)) {return res.status(404).send("Page Not Found!");}
 
     const product = await db.getProductById(id);

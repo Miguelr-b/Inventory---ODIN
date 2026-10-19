@@ -7,6 +7,16 @@ async function getAllCategories() {
   return rows;
 }
 
+async function getCategoriesAndCount() {
+  const {rows} = await pool.query(`   
+    SELECT c.*, COUNT(p.id)::int AS product_count
+    FROM category c
+    LEFT JOIN products p ON p.category_id = c.id
+    GROUP BY c.id
+    ORDER BY c.name`)
+  return rows;
+}
+
 
 // ADD
 async function addProduct(product) {
@@ -175,6 +185,7 @@ module.exports = {
   deleteProduct,
   
   getAllCategories,
+  getCategoriesAndCount,
   addCategory,
   updateCategory,
   deleteCategory,
