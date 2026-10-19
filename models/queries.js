@@ -26,7 +26,10 @@ async function getCategoriesAndCount() {
 
 // ADD
 async function addProduct(product) {
-  await pool.query(`INSERT INTO products (name, description, code, price, coin, rarity, image_url, stock_size, category_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) WHERE (SELECT COUNT(*) FROM products) < $10`, 
+  const { rowCount } = await pool.query(
+    `INSERT INTO products (name, description, code, price, coin, rarity, image_url, stock_size, category_id)
+     SELECT $1::text, $2::text, $3::text, $4::numeric, $5::text, $6::text, $7::text, $8::integer, $9::integer
+     WHERE (SELECT COUNT(*) FROM products) < $10`,
     [ product.name,
       product.description, 
       product.code,
@@ -35,9 +38,13 @@ async function addProduct(product) {
       product.rarity, 
       product.image_url,
       product.stock_size, 
-      product.category_id, 
+      product.category_id,
       MAX_PRODUCTS,
     ]);
+
+  if (rowCount === 0) {
+    throw new Error("Product limit reached.");
+  }
 }
 
 async function addCategory(category) {
