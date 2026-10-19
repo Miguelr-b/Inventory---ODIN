@@ -43,8 +43,8 @@ Create a `.env` file in the project root with the database connection settings r
 ```
 DATABASE_USER= user
 DATABASE_PASSWORD= password
-PORT= port
 DATABASE_DATABASE= database
+DATABASE_URL= url
 ```
 
 If `PORT` is not set, the app runs on port 3000.
