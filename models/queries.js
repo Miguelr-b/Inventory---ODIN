@@ -1,5 +1,11 @@
 const pool = require("./pool");
 
+const MAX_PRODUCTS = 100;
+
+async function getProductCount() {
+  const { rows } = await pool.query("SELECT COUNT(*)::int AS count FROM products");
+  return rows[0].count;
+}
 
 // GET ALL
 async function getAllCategories() {
@@ -20,7 +26,7 @@ async function getCategoriesAndCount() {
 
 // ADD
 async function addProduct(product) {
-  await pool.query(`INSERT INTO products (name, description, code, price, coin, rarity, image_url, stock_size, category_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, 
+  await pool.query(`INSERT INTO products (name, description, code, price, coin, rarity, image_url, stock_size, category_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) WHERE (SELECT COUNT(*) FROM products) < $10`, 
     [ product.name,
       product.description, 
       product.code,
@@ -30,6 +36,7 @@ async function addProduct(product) {
       product.image_url,
       product.stock_size, 
       product.category_id, 
+      MAX_PRODUCTS,
     ]);
 }
 
@@ -194,4 +201,6 @@ module.exports = {
   filterProducts,
 
   getProductById,
+  MAX_PRODUCTS,
+  getProductCount,
 };

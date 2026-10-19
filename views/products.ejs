@@ -7,10 +7,19 @@
     <% const selectedOrder = String(filters.order).toUpperCase() === "DESC" ? "desc" : "asc"; %>
 
     <main class="products-page">
-        <div class="page-header">
-            <h1>Products</h1>
-            <a href="/products/new" class="btn">New product</a>
+    <div class="page-header">
+        <h1>Products</h1>
+        <div class="page-actions">
+            <p class="page-count <%= productCount >= maxProducts ? 'full' : '' %>">
+                <%= productCount %> / <%= maxProducts %> products
+            </p>
+            <% if (productCount >= maxProducts) { %>
+                <button type="button" class="btn" disabled title="The inventory is full. Delete a product to add a new one.">New product</button>
+            <% } else { %>
+                <a href="/products/new" class="btn">New product</a>
+            <% } %>
         </div>
+    </div>
 
         <div class="products-layout">
 

@@ -495,6 +495,23 @@ textarea.edit-input {
     text-align: center;
 }
 
+.page-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-count {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.page-count.full {
+    color: var(--accent);
+    font-weight: 600;
+}
+
 @media (max-width: 600px) {
     .form-title {
         font-size: 1.6rem;

@@ -4,6 +4,7 @@ const { body, validationResult } = require("express-validator");
 const RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary", "Artifact"];
 const COINS = ["Copper (cp)", "Silver (sp)", "Electrum (ep)", "Gold (gp)", "Platinum (pp)"];
 const DEFAULT_PRODUCT_LIMIT = 21;
+const LIMIT_MESSAGE = `The inventory is full (${db.MAX_PRODUCTS} products). Delete a product before adding a new one.`
 
 const validateProduct = [
     body("name").trim().notEmpty().withMessage("Name is required."),
@@ -33,15 +34,17 @@ async function getProducts(req, res, next) {
     try {
         const listedCategories = await db.getAllCategories();
         const filters = req.query;
+        const productCount = await db.getProductCount();
+        const maxProducts = db.MAX_PRODUCTS;
 
         if (!search) {
             const products = await db.filterProducts(req.query);
 
-            return res.render("products", {products, listedCategories, filters});
+            return res.render("products", {products, listedCategories, filters, productCount, maxProducts});
         } else {
             const products = await db.getSearch(search);
 
-            return res.render("products", {products, listedCategories, filters});
+            return res.render("products", {products, listedCategories, filters, productCount, maxProducts});
         }        
     }
     catch (err) {
@@ -52,8 +55,9 @@ async function getProducts(req, res, next) {
 
 async function getAddProducts(req, res) {
     const listedCategories = await db.getAllCategories();
+    const isFull = (await db.getProductCount()) >= db.MAX_PRODUCTS;
 
-    res.render("addProduct", { listedCategories, product: {}, errors: [] });
+    res.render("addProduct", { listedCategories, product: {}, errors: isFull ? [LIMIT_MESSAGE] : [] });
 }
 
 async function postAddProducts(req, res) {
@@ -68,7 +72,20 @@ async function postAddProducts(req, res) {
         });
     }
 
-    await db.addProduct (req.body);
+    try {
+        await db.addProduct(req.body);
+    } catch (err) {
+        if (err.message === "Product limit reached.") {
+            const listedCategories = await db.getAllCategories();
+            return res.status(409).render("addProduct", {
+                listedCategories,
+                product: req.body,
+                errors: [limitMessage()],
+            });
+        }
+        throw err;
+    }
+
     res.redirect("/products");
 }
 
